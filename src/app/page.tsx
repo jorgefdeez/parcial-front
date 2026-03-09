@@ -1,66 +1,71 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
 
-export default function Home() {
+import {useState} from "react";
+import { useRouter } from "next/navigation";
+import { getRandomCocktail } from "@/lib/api/axios";
+
+const Home = () => {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSearch = () => {
+    const query = search.trim();
+    if (!query) return;
+    router.push(`/cocktel?name=${encodeURIComponent(query)}`);
+  };
+
+  const obtenerCoktelAleatorio = async () => {
+    if (loading) return;
+
+    setError(null);
+    setLoading(true);
+
+    try {
+      const coktel = await getRandomCocktail();
+
+      if (!coktel) {
+        setError('fallo al obtener el coktel aleatorio');
+        return;
+      }
+
+      router.push(`/cocktel/${coktel.idDrink}`);
+    } catch {
+      setError('Ocurrio un error al buscar un coktel aleatorio.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="home-container">
+      <div className="home-card">
+     
+        <h1 className="home-title">Cocktails</h1>
+        
+        <div className="home-search-box">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}
+            className="home-input"
+          />
+          
+          <button className="home-button" onClick={onSearch}>Buscar</button>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        <button className="home-button" onClick={obtenerCoktelAleatorio} disabled={loading}>
+          {loading ? 'Buscando...' : 'Dime algo bonito'}
+        </button>
+
+        {error && <p className="home-error">{error}</p>}
+      </div>
     </div>
-  );
+  )
 }
+
+export default Home
+
