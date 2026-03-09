@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { getCoktelByName } from '@/lib/api/axios';
 import { Cocktel } from '@/types';
 
-const CocktailPage = () => {
+const CoktelPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const name = searchParams.get('name')?.trim() ?? '';
@@ -69,6 +69,6 @@ const CocktailPage = () => {
     );
 };
 
-export default CocktailPage;
+export default CoktelPage;
 
     

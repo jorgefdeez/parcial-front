@@ -6,7 +6,7 @@ import { getCoktelById } from '@/lib/api/axios';
 import CocktailCard from '@/components/cocktelcard';
 import { Cocktel } from '@/types';
 
-const CocktailDetailPage = () => {
+const CoktelDetailPage = () => {
 	const { id } = useParams();
     
 	const [loading, setLoading] = useState(false);
@@ -36,4 +36,4 @@ const CocktailDetailPage = () => {
 	);
 };
 
-export default CocktailDetailPage;
+export default CoktelDetailPage;
